@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>bouncy box</title>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+	<canvas id="bouncy" width="400" height="400"></canvas>
+	<script type="text/javascript">
+		var canvas = document.getElementById("bouncy");
+		var context = canvas.getContext("2d");
+		context.scale(4, 4);
+		var socket = io();
+		socket.on("clear", function () {
+			context.clearRect(0, 0, 400, 400);
+		});
+		socket.on("update", function (data) {
+			context.fillStyle = "green";
+			context.fillRect(data.p.x, data.p.y, data.r.width, data.r.height);
+		});
+
+	</script>
+</body>
+</html>
