@@ -24,7 +24,7 @@ var ColorComponent = function Color(clr) {
 // export 
 module.exports = function (io) {
 	// initialize engine and systems
-	var game = new orion.Engine();
+	var game = new orion();
 	
 	var phys = game.createSystem([PositionComponent, VelocityComponent, RectangleComponent], {
 		act: function (e, pos, vel, rect) {
