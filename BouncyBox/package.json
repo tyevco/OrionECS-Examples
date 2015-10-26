@@ -1,0 +1,10 @@
+{
+  "name": "BouncyBox",
+  "version": "0.0.0",
+  "description": "BouncyBox",
+  "main": "app.js",
+  "author": {
+    "name": "Tyler",
+    "email": ""
+  }
+}
