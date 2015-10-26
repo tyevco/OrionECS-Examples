@@ -1,5 +1,5 @@
 ﻿
-var orion = require("../../orion/src/orion");
+var orion = require("orion-ecs");
 
 // components
 var PositionComponent = function Position(x, y) {
