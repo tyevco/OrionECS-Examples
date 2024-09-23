@@ -1,0 +1,15 @@
+{
+    "name": "tower-defense-demo",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "A simple tower defense game using Orion ECS",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "preview": "vite preview"
+    },
+    "devDependencies": {
+      "vite": "^4.3.9"
+    }
+  }
+  
