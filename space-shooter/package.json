@@ -11,11 +11,16 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^4.3.9"
+    "vite": "^4.5.5"
   },
   "dependencies": {
     "@pmndrs/uikit": "^0.5.4",
+    "@react-three/fiber": "^8.17.8",
+    "@react-three/uikit": "^0.5.4",
+    "@vitejs/plugin-react": "^4.3.1",
     "orion-ecs": "^0.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "three": "^0.168.0"
   }
 }

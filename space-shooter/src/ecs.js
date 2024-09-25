@@ -130,13 +130,10 @@ game.createSystem([Position, Renderable], {
 // Rendering System
 game.createSystem([Position, Renderable], {
   before: function() {
-    if (!this.scene) {
-      this.scene = new THREE.Scene();
-      this.camera = new THREE.OrthographicCamera(-10, 10, 7.5, -7.5, 0.1, 1000);
-      this.camera.position.z = 10;
-      this.renderer = new THREE.WebGLRenderer();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(this.renderer.domElement);
+    if (!game.scene) {
+      game.scene = new THREE.Scene();
+      game.camera = new THREE.OrthographicCamera(-10, 10, 7.5, -7.5, 0.1, 1000);
+      game.camera.position.z = 10;
     }
   },
   act: function(entity, [position, renderable]) {
@@ -159,13 +156,13 @@ game.createSystem([Position, Renderable], {
           break;
       }
       renderable.mesh = new THREE.Mesh(geometry, material);
-      this.scene.add(renderable.mesh);
+      game.scene.add(renderable.mesh);
     }
     
     renderable.mesh.position.set(position.x, position.y, 0);
   },
   after: function() {
-    this.renderer.render(this.scene, this.camera);
+    // No need to render here, React Three Fiber will handle rendering
   }
 });
 
@@ -189,6 +186,5 @@ game.input = { left: false, right: false, up: false, down: false, shoot: false, 
 game.values = { lastSpawn: Date.now(), lastShot: Date.now() };
 game.score = 0;
 game.gameOver = false;
-gameLoop();
 
 export { game };
