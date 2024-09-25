@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Fullscreen, Container, Text } from "@react-three/uikit";
 import { game } from './ecs';
 import { KeyboardControls } from './controls';
 import * as THREE from 'three';
@@ -63,21 +62,31 @@ export default function App() {
     }, []);
 
     return (
-        <>
+        <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
             <KeyboardControls />
             <Canvas style={{ position: "absolute", inset: "0", touchAction: "none" }} orthographic camera={{ zoom: 40, position: [0, 0, 100] }}>
                 <GameEntities />
-                <Fullscreen flexDirection="column" padding={1} gap={1}>
-                    <Container flexDirection="row" justifyContent="flex-end" width="100%" height={2}>
-                        <Text fontSize={0.5} color="white">Score: {score}</Text>
-                    </Container>
-                    {gameOver && (
-                        <Container flexDirection="column" justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="rgba(0,0,0,0.5)">
-                            <Text fontSize={1} color="white">Game Over</Text>
-                        </Container>
-                    )}
-                </Fullscreen>
             </Canvas>
-        </>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', top: '10px', right: '10px', color: 'white', fontSize: '24px' }}>
+                    Score: {score}
+                </div>
+                {gameOver && (
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)'
+                    }}>
+                        <div style={{ color: 'white', fontSize: '48px' }}>Game Over</div>
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }
