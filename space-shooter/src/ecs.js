@@ -1,5 +1,4 @@
 import { Engine } from "orion-ecs";
-import * as THREE from 'three';
 
 // Components
 class Position {
@@ -19,7 +18,6 @@ class Velocity {
 class Renderable {
   constructor(type) {
     this.type = type; // 'player', 'enemy', 'bullet'
-    this.mesh = null; // Will store the Three.js mesh
   }
 }
 
@@ -85,26 +83,6 @@ game.createSystem([], {
   }
 });
 
-// Cleanup System
-game.createSystem([Position, Renderable], {
-  act: function(entity, [position, renderable]) {
-    // Remove bullets that go off screen
-    if (renderable.type === 'bullet' && position.y > 8) {
-      game.entities.splice(game.entities.indexOf(entity), 1);
-      if (renderable.mesh) {
-        this.scene.remove(renderable.mesh);
-      }
-    }
-    // Remove enemies that go off screen
-    if (renderable.type === 'enemy' && position.y < -8) {
-      game.entities.splice(game.entities.indexOf(entity), 1);
-      if (renderable.mesh) {
-        this.scene.remove(renderable.mesh);
-      }
-    }
-  }
-});
-
 // Collision System
 game.createSystem([Position, Renderable], {
   act: function(entity, [position, renderable]) {
@@ -127,45 +105,6 @@ game.createSystem([Position, Renderable], {
   }
 });
 
-// Rendering System
-game.createSystem([Position, Renderable], {
-  before: function() {
-    if (!game.scene) {
-      game.scene = new THREE.Scene();
-      game.camera = new THREE.OrthographicCamera(-10, 10, 7.5, -7.5, 0.1, 1000);
-      game.camera.position.z = 10;
-    }
-  },
-  act: function(entity, [position, renderable]) {
-    if (!renderable.mesh) {
-      let geometry;
-      let material;
-      switch (renderable.type) {
-        case 'player':
-          geometry = new THREE.ConeGeometry(0.5, 1, 3);
-          geometry.rotateX(Math.PI);
-          material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-          break;
-        case 'enemy':
-          geometry = new THREE.CircleGeometry(0.25, 32);
-          material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-          break;
-        case 'bullet':
-          geometry = new THREE.CircleGeometry(0.1, 32);
-          material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-          break;
-      }
-      renderable.mesh = new THREE.Mesh(geometry, material);
-      game.scene.add(renderable.mesh);
-    }
-    
-    renderable.mesh.position.set(position.x, position.y, 0);
-  },
-  after: function() {
-    // No need to render here, React Three Fiber will handle rendering
-  }
-});
-
 // Create player
 const player = game.createEntity();
 player.addComponent(new Position(0, -6));
@@ -173,15 +112,7 @@ player.addComponent(new Velocity(0, 0));
 player.addComponent(new Renderable('player'));
 player.addComponent(new PlayerControlled());
 
-// Game loop
-function gameLoop() {
-  if (!game.gameOver) {
-    game.perform();
-    requestAnimationFrame(gameLoop);
-  }
-}
-
-// Start the game
+// Initialize game properties
 game.input = { left: false, right: false, up: false, down: false, shoot: false, shootCooldown: false };
 game.values = { lastSpawn: Date.now(), lastShot: Date.now() };
 game.score = 0;

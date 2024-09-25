@@ -1,36 +1,52 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Fullscreen, Container, Text } from "@react-three/uikit";
 import { game } from './ecs';
 import { KeyboardControls } from './controls';
+import * as THREE from 'three';
 
-function GameScene() {
-    const sceneRef = useRef();
+function GameEntities() {
+    const [entities, setEntities] = useState([]);
 
-    useEffect(() => {
-        if (sceneRef.current) {
-            // Add the game's Three.js scene to our React Three Fiber scene
-            sceneRef.current.add(game.scene);
-        }
+    useFrame(() => {
+        game.perform();
+        setEntities([...game.entities]);
+    });
 
-        // Start the game loop
-        function gameLoop() {
-            if (!game.gameOver) {
-                game.perform();
-                requestAnimationFrame(gameLoop);
-            }
-        }
-        gameLoop();
+    return (
+        <>
+            {entities.map((entity, index) => {
+                if (entity.hasComponent('Position') && entity.hasComponent('Renderable')) {
+                    const position = entity.components.Position;
+                    const renderable = entity.components.Renderable;
+                    let geometry, material;
 
-        // Clean up
-        return () => {
-            if (sceneRef.current) {
-                sceneRef.current.remove(game.scene);
-            }
-        };
-    }, []);
+                    switch (renderable.type) {
+                        case 'player':
+                            geometry = new THREE.ConeGeometry(0.5, 1, 3);
+                            material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+                            break;
+                        case 'enemy':
+                            geometry = new THREE.CircleGeometry(0.25, 32);
+                            material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                            break;
+                        case 'bullet':
+                            geometry = new THREE.CircleGeometry(0.1, 32);
+                            material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                            break;
+                    }
 
-    return <scene ref={sceneRef} />;
+                    return (
+                        <mesh key={index} position={[position.x, position.y, 0]} rotation={renderable.type === 'player' ? [Math.PI, 0, 0] : [0, 0, 0]}>
+                            <primitive object={geometry} />
+                            <primitive object={material} />
+                        </mesh>
+                    );
+                }
+                return null;
+            })}
+        </>
+    );
 }
 
 export default function App() {
@@ -49,8 +65,8 @@ export default function App() {
     return (
         <>
             <KeyboardControls />
-            <Canvas style={{ position: "absolute", inset: "0", touchAction: "none" }} gl={{ localClippingEnabled: true }} camera={game.camera}>
-                <GameScene />
+            <Canvas style={{ position: "absolute", inset: "0", touchAction: "none" }} orthographic camera={{ zoom: 40, position: [0, 0, 100] }}>
+                <GameEntities />
                 <Fullscreen flexDirection="column" padding={1} gap={1}>
                     <Container flexDirection="row" justifyContent="flex-end" width="100%" height={2}>
                         <Text fontSize={0.5} color="white">Score: {score}</Text>
@@ -62,5 +78,6 @@ export default function App() {
                     )}
                 </Fullscreen>
             </Canvas>
-        </>);
+        </>
+    );
 }
