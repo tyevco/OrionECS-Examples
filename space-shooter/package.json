@@ -1,10 +1,10 @@
 {
-  "name": "tower-defense-demo",
+  "name": "space-shooter-demo",
   "version": "1.0.0",
   "type": "module",
   "author": "Tyler Coles",
   "license": "MIT",
-  "description": "A simple tower defense game using Orion ECS",
+  "description": "A space shooter game using Orion ECS",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,5 +12,10 @@
   },
   "devDependencies": {
     "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "@pmndrs/uikit": "^0.5.4",
+    "orion-ecs": "^0.1.0",
+    "three": "^0.168.0"
   }
 }
